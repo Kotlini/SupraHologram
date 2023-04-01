@@ -1,0 +1,6 @@
+name: SupraHolograms
+version: '${version}'
+main: fr.ylanouh.supraholograms.Main
+commands:
+  test:
+    description: test
