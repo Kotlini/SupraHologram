@@ -1,2 +1,3 @@
-# SupraHologram
-![IntelliJ Snippet](https://user-images.githubusercontent.com/105997373/229313592-0d7f09c1-0697-4d9d-a259-047dfb40a208.png)
+SupraHologram [Libs]
+
+![IntelliJ Snippet (1)](https://user-images.githubusercontent.com/105997373/229313622-5ac0efcc-49b3-45f8-b6b2-bcd896789254.png)
