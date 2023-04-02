@@ -1,0 +1,47 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build test jar
+      run: ./gradlew testJar
+
+    - name: Start Spigot server
+      uses: docker://itzg/minecraft-server:java8
+      with:
+        image: itzg/minecraft-server:java8
+        env: 
+          EULA: "true"
+        ports:
+          - "25565:25565"
+        command: java -Xmx2G -Xms1G -jar /minecraft_server.jar nogui
+
+    - name: Wait for server startup
+      run: sleep 30
+
+    - name: Copy test jar to server
+      uses: appleboy/scp-action@master
+      with:
+        source: ./build/libs/SupraHolograms-Test.jar
+        target: /plugins/SupraHolograms-Test.jar
+
+    - name: Start test
+      run: |
+        logs=$(curl --retry-connrefused --retry-delay 5 --retry 60 http://localhost:25565/logs/latest.log)
+        echo "$logs"
+        if echo "$logs" | grep -q "Starting Minecraft server on"; then
+          echo "Server started successfully"
+          curl --retry-connrefused --retry-delay 5 --retry 60 --data "cmd=/test" http://localhost:25565/sendcmd
+        else
+          echo "Failed to start server"
+          exit 1
+        fi
