@@ -99,6 +99,7 @@ public class HologramBox {
         return entry.getValue();
     }
 
+    @SuppressWarnings("unused")
     public Hologram getHologram(ArmorStand armorStand) {
         for (Hologram hologram : holograms.values()) {
             if (hologram.getArmorStand().equals(armorStand)) return hologram;
@@ -135,10 +136,12 @@ public class HologramBox {
         return boxId + "-" + UUID.randomUUID();
     }
 
+    @SuppressWarnings("unused")
     public void setBoxId(String boxId) {
         this.boxId = boxId;
     }
 
+    @SuppressWarnings("unused")
     public void setLocation(Location location) {
         this.location = location;
     }
@@ -147,6 +150,7 @@ public class HologramBox {
         return location;
     }
 
+    @SuppressWarnings("unused")
     public void setHolograms(LinkedHashMap<String, Hologram> holograms) {
         this.holograms = holograms;
     }

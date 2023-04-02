@@ -9,6 +9,7 @@ import org.bukkit.entity.ArmorStand;
 public interface Hologram extends Separable{
     String getId();
 
+    @SuppressWarnings("unused")
     void setId(String id);
 
     void setLine(Object ob);

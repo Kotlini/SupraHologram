@@ -18,6 +18,7 @@ public class SupraHolograms {
         hologramsBoxes.put(hologramBox.getBoxId(), hologramBox);
     }
 
+    @SuppressWarnings("unused")
     public void remove(String id) {
         hologramsBoxes.get(id).removeAll();
         hologramsBoxes.remove(id);
@@ -32,10 +33,12 @@ public class SupraHolograms {
         return hologramsBoxes;
     }
 
+    @SuppressWarnings("unused")
     public HologramBox getHologramsBox(String id) {
         return hologramsBoxes.get(id);
     }
 
+    @SuppressWarnings("unused")
     public void spawnAll() {
         for (HologramBox hologramBox : hologramsBoxes.values()) {
             hologramBox.spawnAll();

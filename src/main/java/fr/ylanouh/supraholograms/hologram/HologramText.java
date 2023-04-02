@@ -150,14 +150,17 @@ public class HologramText implements Hologram {
         return space;
     }
 
+    @SuppressWarnings("unused")
     public HologramItem getHologramItem() {
         return hologramItem;
     }
 
+    @SuppressWarnings("unused")
     public void setHologramItem(HologramItem hologramItem) {
         this.hologramItem = hologramItem;
     }
 
+    @SuppressWarnings("unused")
     public boolean asHologramItem() {
         return this.hologramItem != null;
     }

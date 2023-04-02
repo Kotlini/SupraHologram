@@ -4,7 +4,6 @@ import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
 import fr.ylanouh.supraholograms.interfaces.Hologram;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
@@ -54,9 +53,7 @@ public class HologramItem implements Hologram {
 
     @Override
     public Location getLocation() {
-        if (line == null) return null;
-
-        return this.line.getLocation();
+        return this.location;
     }
 
     @Override
