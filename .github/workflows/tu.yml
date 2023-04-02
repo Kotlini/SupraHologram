@@ -22,9 +22,11 @@ jobs:
     - name: Build test jar
       run: ./gradlew testJar
         
-    - name: Copy spigot ${{ matrix.mc }}
+    - name: Install spigot ${{ matrix.mc }}
       run: |
-        cp spigot/spigot-${{ matrix.mc }}.jar .
+        wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+        java -jar BuildTools.jar --rev ${{ matrix.mc }}
+        mv spigot-${{ matrix.mc }}.jar spigot.jar
     
     - name: Copy to plugins directory
       run: |
