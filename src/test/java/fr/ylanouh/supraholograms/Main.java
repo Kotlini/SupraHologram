@@ -17,8 +17,8 @@ public class Main extends JavaPlugin {
         getCommand("test").setExecutor(new TestCmd());
 
         System.out.println("SupraHolograms was enabled");
-
         System.out.println("Unit test starting...");
+
         try {
             System.out.println("Starting test at 0, 150, 0");
             SupraHologramsTests.prepare(new Location(Bukkit.getWorld("world"), 0, 150, 0));
