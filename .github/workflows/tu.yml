@@ -5,40 +5,44 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mc: [1.8.8]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+      
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.mc == '1.8.8' && 8 || 16 }}  
+          
     - name: Build test jar
       run: ./gradlew testJar
-
-    - name: Start Spigot server
-      uses: docker://itzg/minecraft-server:java8
-      with:
-        image: itzg/minecraft-server:java8
-        env: 
-          EULA: "true"
-        ports:
-          - "25565:25565"
-        command: java -Xmx2G -Xms1G -jar /minecraft_server.jar nogui
-
-    - name: Wait for server startup
-      run: sleep 30
-
-    - name: Copy test jar to server
-      uses: appleboy/scp-action@master
-      with:
-        source: ./build/libs/SupraHolograms-Test.jar
-        target: /plugins/SupraHolograms-Test.jar
-
-    - name: Start test
+      
+    - name: Install spigot ${{ matrix.mc }}
       run: |
-        logs=$(curl --retry-connrefused --retry-delay 5 --retry 60 http://localhost:25565/logs/latest.log)
-        echo "$logs"
-        if echo "$logs" | grep -q "Starting Minecraft server on"; then
-          echo "Server started successfully"
-          curl --retry-connrefused --retry-delay 5 --retry 60 --data "cmd=/test" http://localhost:25565/sendcmd
-        else
-          echo "Failed to start server"
+          wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+          java -jar BuildTools.jar --rev ${{ matrix.mc }}
+          mv spigot-${{ matrix.mc }}.jar spigot.jar
+          
+    - name: Copy to plugins directory
+      run: |
+        mkdir -p plugins
+        cp build/libs/SupraHolograms-Test.jar plugins/
+        
+    - name: Start server and stop it
+      run: |
+        echo "eula=true" > eula.txt
+        echo "level-type=FLAT" > server.properties
+        java -Xmx2G -jar spigot.jar &
+        sleep 120
+        test
+        sleep 10
+        killall java
+
+    - name: Check server logs, error if no match
+      run: |
+        if ! grep -q "Tests success" logs/latest.log; then
+          echo "Server did not start correctly"
           exit 1
         fi
