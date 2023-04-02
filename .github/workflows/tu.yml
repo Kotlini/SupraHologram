@@ -38,7 +38,7 @@ jobs:
         echo "eula=true" > eula.txt
         echo "level-type=FLAT" > server.properties
         java -Xmx2G -jar spigot.jar &
-        sleep 40
+        sleep 25
         killall java
         
     - name: Check SupraHolohrams is enabled, error if no match
