@@ -20,11 +20,12 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
-    shadow group: 'org.yaml', name: 'snakeyaml', version: '2.0'
+    implementation "junit:junit-dep:4.5"
 }
 
 shadowJar {
     archiveName 'SupraHolograms.jar'
+    relocate("org.junit.jupiter", "fr.ylanouh.supraholograms")
 }
 
 def targetJavaVersion = 8

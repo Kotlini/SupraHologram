@@ -5,6 +5,7 @@ import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.interfaces.Hologram;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 
 import java.util.*;
@@ -31,12 +32,10 @@ public class HologramBox {
     }
 
     public void insertText(int index, String line) {
-        Iterator<Map.Entry<String, Hologram>> iterator = holograms.entrySet().iterator();
-        for (int i = 0; i < index; i++) {
-            iterator.next();
-        }
-        iterator.next().getValue().setLine(line);
-        iterator.remove();
+        Hologram hologram = getHologram(index);
+        if (hologram.isItem()) return;
+
+        hologram.setLine(line);
     }
 
     public void removeText(int index) {
@@ -45,11 +44,18 @@ public class HologramBox {
             iterator.next();
         }
 
-        if (iterator.next().getValue().isText()) {
-            HologramText hologramItem = (HologramText) iterator.next();
+        Hologram hologram = iterator.next().getValue();
+
+        if (hologram.isText()) {
+            HologramText hologramItem = (HologramText) hologram;
             hologramItem.remove(RemoveType.ALL);
+            holograms.remove(hologram.getId());
             iterator.remove();
         }
+    }
+
+    public void appendItem(Item item) {
+        appendItem(item, 0.3);
     }
 
     public void appendItem(Item item, double quirky) {
@@ -58,10 +64,17 @@ public class HologramBox {
     }
 
     public void insertItem(int index, Item item) {
-        String id = generateID();
         Hologram hologram = getHologram(index);
+        if (hologram.isText()) return;
 
-        holograms.put(id, new HologramItem(generateID(), item, hologram.getLocation(), hologram));
+        Entity entity = hologram.getArmorStand().getPassenger();
+
+        if (entity != null) entity.remove();
+
+        hologram.getArmorStand().remove();
+        hologram.setLine(item);
+
+        hologram.spawn(SpawnType.ALL);
     }
 
     public void removeItem(int index) {
@@ -70,19 +83,14 @@ public class HologramBox {
             iterator.next();
         }
 
-        if (iterator.next().getValue().isItem()) {
-            HologramItem hologramItem = (HologramItem) iterator.next();
+        Hologram hologram = iterator.next().getValue();
+
+        if (hologram.isItem()) {
+            HologramItem hologramItem = (HologramItem) hologram;
             hologramItem.remove(RemoveType.ALL);
+            holograms.remove(hologram.getId());
             iterator.remove();
         }
-    }
-
-    public void removeHologramText(HologramText hologramText) {
-        hologramText.remove(RemoveType.ALL);
-    }
-
-    public void removeHologramItem(HologramItem hologramItem) {
-        hologramItem.remove(RemoveType.ALL);
     }
 
     public Hologram getHologram(int index) {

@@ -54,12 +54,8 @@ public final class HologramBuilder {
         return this;
     }
 
-    public HologramBuilder register(SupraHolograms supraHolograms) {
-        supraHolograms.add(hologramBox);
-        return this;
-    }
-
     public HologramBox build() {
+        SupraHolograms.getInstance().add(hologramBox);
         hologramBox.spawnAll();
         return this.hologramBox;
     }

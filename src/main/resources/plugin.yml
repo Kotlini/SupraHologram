@@ -1,5 +1,8 @@
 name: SupraHolograms
 version: '${version}'
+authors:
+  - Ylanouh
+  - RsMan-Dev
 main: fr.ylanouh.supraholograms.Main
 commands:
   test:

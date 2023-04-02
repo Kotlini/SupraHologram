@@ -130,6 +130,8 @@ public class HologramText implements Hologram {
     @Override
     public void setLine(Object line) {
         this.line = (String) line;
+
+        update(UpdateType.NAME);
     }
 
     @Override

@@ -70,7 +70,6 @@ public class HologramItem implements Hologram {
                     return;
                 }
 
-                Bukkit.broadcastMessage("Set to armor");
                 addArmorStand();
                 break;
             case PARENT:
