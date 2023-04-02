@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
@@ -20,12 +22,12 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
-    implementation "junit:junit-dep:4.5"
+    testCompileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    testImplementation "junit:junit-dep:4.5"
 }
 
 shadowJar {
     archiveName 'SupraHolograms.jar'
-    relocate("org.junit.jupiter", "fr.ylanouh.supraholograms")
 }
 
 def targetJavaVersion = 8
@@ -35,12 +37,6 @@ java {
     targetCompatibility = javaVersion
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion as Property<Integer>
     }
 }
 
@@ -59,6 +55,14 @@ test {
     maxHeapSize = '1G'
 
     testLogging {
-        events "passed"
+        events "failed"
+        exceptionFormat "full"
     }
+}
+
+tasks.register('testJar', ShadowJar) {
+    archiveClassifier.set("alltests")
+    setArchiveName("SupraHolograms-Test.jar")
+    from sourceSets.main.output, sourceSets.test.output
+    configurations = [project.configurations.testRuntimeClasspath]
 }

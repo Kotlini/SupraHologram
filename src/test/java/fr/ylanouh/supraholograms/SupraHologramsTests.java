@@ -1,8 +1,5 @@
-package test.fr.ylanouh.supraholograms;
+package fr.ylanouh.supraholograms;
 
-import fr.ylanouh.supraholograms.Main;
-import fr.ylanouh.supraholograms.SupraHolograms;
-import fr.ylanouh.supraholograms.Utils;
 import fr.ylanouh.supraholograms.builder.HologramBuilder;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.hologram.HologramBox;
