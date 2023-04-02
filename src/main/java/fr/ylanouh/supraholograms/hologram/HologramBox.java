@@ -22,6 +22,9 @@ public class HologramBox {
         this.holograms = new LinkedHashMap<>();
     }
 
+    public void appendText(String name) {
+        appendText(name, 0.3);
+    }
     public void appendText(String name, double quirky) {
         String id = generateID();
         holograms.put(id, new HologramText(generateID(), name, getNewLoc(quirky)));

@@ -22,20 +22,25 @@ public final class HologramBuilder {
         return this;
     }
 
-    public HologramBuilder appendLines(Object... lines) {
-        for (Object line : lines) {
-            appendLine(line);
-        }
+    public HologramBuilder appendLines(String... lines) {
+        for (String line : lines) appendLine(line);
         return this;
     }
 
-    public HologramBuilder appendLine(Object line) {
+    public HologramBuilder appendLines(ItemStack... items) {
+        for (ItemStack item : items) appendLine(item);
+        return this;
+    }
+
+    public HologramBuilder appendLine(ItemStack item) {
         double q = quirky != 0 ? quirky : 0.3;
-        if (Utils.isItem(line)) {
-            hologramBox.appendItem(Utils.spawnItem((ItemStack) line, hologramBox.getLocation()), q);
-        } else {
-            hologramBox.appendText((String) line, q);
-        }
+        hologramBox.appendItem(Utils.spawnItem(item, hologramBox.getLocation()), q);
+        return this;
+    }
+
+    public HologramBuilder appendLine(String line) {
+        double q = quirky != 0 ? quirky : 0.3;
+        hologramBox.appendText(line, q);
         return this;
     }
 

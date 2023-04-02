@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SupraHolograms {
+    private static SupraHolograms instance;
 
     private final Map<String, HologramBox> hologramsBoxes;
 
@@ -27,6 +28,10 @@ public class SupraHolograms {
         hologramsBoxes.clear();
     }
 
+    public Map<String, HologramBox> getHologramsBoxes() {
+        return hologramsBoxes;
+    }
+
     public HologramBox getHologramsBox(String id) {
         return hologramsBoxes.get(id);
     }
@@ -41,6 +46,12 @@ public class SupraHolograms {
         for (HologramBox hologramBox : hologramsBoxes.values()) {
             hologramBox.removeAll();
         }
+    }
+
+
+    public static SupraHolograms getInstance(){
+        if(instance == null) instance = new SupraHolograms();
+        return instance;
     }
 
 }
