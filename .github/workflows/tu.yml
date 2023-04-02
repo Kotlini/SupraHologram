@@ -21,31 +21,34 @@ jobs:
       
     - name: Build test jar
       run: ./gradlew testJar
-      
-    - name: Install spigot ${{ matrix.mc }}
+        
+    - name: Copy spigot ${{ matrix.mc }}
       run: |
-          wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-          java -jar BuildTools.jar --rev ${{ matrix.mc }}
-          mv spigot-${{ matrix.mc }}.jar spigot.jar
-          
+        cp spigot/spigot-${{ matrix.mc }}.jar .
+    
     - name: Copy to plugins directory
       run: |
         mkdir -p plugins
         cp build/libs/SupraHolograms-Test.jar plugins/
         
-    - name: Start server and stop it
+    - name: Start server
       run: |
         echo "eula=true" > eula.txt
         echo "level-type=FLAT" > server.properties
         java -Xmx2G -jar spigot.jar &
         sleep 120
-        test
-        sleep 10
         killall java
 
-    - name: Check server logs, error if no match
+    - name: Check server is enabled correctly, error if no match
       run: |
-        if ! grep -q "Tests success" logs/latest.log; then
+        if ! grep -q "SupraHolograms was enabled" logs/latest.log; then
           echo "Server did not start correctly"
           exit 1
         fi
+        
+    - name: Check unit test is success, error if no match
+      run: |
+        if ! grep -q "Tests success" logs/latest.log; then
+          echo "Server did not start correctly"
+          exit 2
+        fi     
