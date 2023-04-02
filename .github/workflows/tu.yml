@@ -33,24 +33,24 @@ jobs:
         mkdir -p plugins
         cp build/libs/SupraHolograms-Test.jar plugins/
         
-    - name: Start server
+    - name: Start server and stop it
       run: |
         echo "eula=true" > eula.txt
         echo "level-type=FLAT" > server.properties
         java -Xmx2G -jar spigot.jar &
-        sleep 120
+        sleep 40
         killall java
-
-    - name: Check server is enabled correctly, error if no match
+        
+    - name: Check SupraHolohrams is enabled, error if no match
       run: |
         if ! grep -q "SupraHolograms was enabled" logs/latest.log; then
-          echo "Server did not start correctly"
+          echo "SupraHolograms was failled"
           exit 1
-        fi
-        
-    - name: Check unit test is success, error if no match
+        fi      
+         
+    - name: Check tests is not failled, error if no match
       run: |
         if ! grep -q "Tests success" logs/latest.log; then
-          echo "Server did not start correctly"
-          exit 2
-        fi     
+          echo "Tests failed with errors"
+          exit 1
+        fi 
