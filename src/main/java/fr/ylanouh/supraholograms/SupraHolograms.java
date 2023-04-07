@@ -1,12 +1,15 @@
 package fr.ylanouh.supraholograms;
 
 import fr.ylanouh.supraholograms.hologram.HologramBox;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SupraHolograms {
     private static SupraHolograms instance;
+
+    private Plugin plugin;
 
     private final Map<String, HologramBox> hologramsBoxes;
 
@@ -57,4 +60,11 @@ public class SupraHolograms {
         return instance;
     }
 
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(Plugin plugin) {
+        this.plugin = plugin;
+    }
 }

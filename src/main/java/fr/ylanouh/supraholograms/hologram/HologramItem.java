@@ -1,5 +1,6 @@
 package fr.ylanouh.supraholograms.hologram;
 
+import fr.ylanouh.supraholograms.Utils;
 import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
@@ -121,6 +122,11 @@ public class HologramItem implements Hologram {
     }
 
     @Override
+    public boolean isPacket() {
+        return false;
+    }
+
+    @Override
     public void addSpace(double space) {
         this.space = space;
     }
@@ -153,7 +159,7 @@ public class HologramItem implements Hologram {
             return;
         }
 
-        this.armorStand.teleport(location);
+        Utils.teleportArmorStand(armorStand, location);
     }
 
     private void addArmorStand() {

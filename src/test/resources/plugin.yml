@@ -1,9 +1,11 @@
 name: SupraHolograms
-version: '${version}'
+version: '0.0.1'
 authors:
   - Ylanouh
   - RsMan-Dev
 main: fr.ylanouh.supraholograms.Main
 commands:
   test:
-    description: test
+    description: test unit
+  sh:
+    description: test plugin

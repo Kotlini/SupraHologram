@@ -2,11 +2,15 @@ package fr.ylanouh.supraholograms.hologram;
 
 import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
+import fr.ylanouh.supraholograms.enums.UpdateType;
+import fr.ylanouh.supraholograms.hologram.packets.HologramTextPacket;
 import fr.ylanouh.supraholograms.interfaces.Hologram;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -23,12 +27,18 @@ public class HologramBox {
         this.holograms = new LinkedHashMap<>();
     }
 
-    public void appendText(String name) {
-        appendText(name, 0.3);
+    public void appendText(String name, boolean spawn) {
+        appendText(name, 0.3, spawn);
     }
-    public void appendText(String name, double quirky) {
+
+    public void appendText(String name, double quirky, boolean spawn) {
         String id = generateID();
-        holograms.put(id, new HologramText(generateID(), name, getNewLoc(quirky)));
+        Hologram hologram = new HologramText(generateID(), name, getNewLoc(quirky));
+        holograms.put(id, hologram);
+
+        if (spawn) {
+            hologram.spawn(SpawnType.ALL);
+        }
     }
 
     public void insertText(int index, String line) {
@@ -36,31 +46,33 @@ public class HologramBox {
         if (hologram.isItem()) return;
 
         hologram.setLine(line);
+        hologram.update(UpdateType.NAME);
     }
 
     public void removeText(int index) {
-        Iterator<Map.Entry<String, Hologram>> iterator = holograms.entrySet().iterator();
-        for (int i = 0; i < index; i++) {
-            iterator.next();
-        }
+        Hologram hologram = getHologram(index);
 
-        Hologram hologram = iterator.next().getValue();
+        if (hologram == null) return;
 
         if (hologram.isText()) {
-            HologramText hologramItem = (HologramText) hologram;
-            hologramItem.remove(RemoveType.ALL);
+            hologram.remove(RemoveType.ALL);
             holograms.remove(hologram.getId());
-            iterator.remove();
+            calculatePosition(index);
         }
     }
 
-    public void appendItem(Item item) {
-        appendItem(item, 0.3);
+    public void appendItem(Item item, boolean spawn) {
+        appendItem(item, 0.2, spawn);
     }
 
-    public void appendItem(Item item, double quirky) {
+    public void appendItem(Item item, double quirky, boolean spawn) {
         String id = generateID();
-        holograms.put(id, new HologramItem(generateID(), item, getNewLoc(quirky), null));
+        HologramItem hologramItem = new HologramItem(generateID(), item, getNewLoc(quirky), null);
+        holograms.put(id, hologramItem);
+
+        if (spawn) {
+            hologramItem.spawn(SpawnType.ALL);
+        }
     }
 
     public void insertItem(int index, Item item) {
@@ -75,21 +87,67 @@ public class HologramBox {
         hologram.setLine(item);
 
         hologram.spawn(SpawnType.ALL);
+        calculatePosition(index);
+    }
+
+    public void removeLine(int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null) return;
+
+        if (hologram.isText()) {
+            removeText(index);
+        } else {
+            removeItem(index);
+        }
+        calculatePosition(index);
     }
 
     public void removeItem(int index) {
-        Iterator<Map.Entry<String, Hologram>> iterator = holograms.entrySet().iterator();
-        for (int i = 0; i < index; i++) {
-            iterator.next();
-        }
+        Hologram hologram = getHologram(index);
 
-        Hologram hologram = iterator.next().getValue();
+        if (hologram == null) return;
 
         if (hologram.isItem()) {
-            HologramItem hologramItem = (HologramItem) hologram;
-            hologramItem.remove(RemoveType.ALL);
+            hologram.remove(RemoveType.ALL);
             holograms.remove(hologram.getId());
-            iterator.remove();
+            calculatePosition(index);
+        }
+    }
+
+    public void appendTextPacket(String name, double quirky, boolean spawn) {
+        String id = generateID();
+        Hologram hologram = new HologramTextPacket(generateID(), ChatColor.translateAlternateColorCodes('&', name),
+                getNewLoc(quirky));
+        holograms.put(id, hologram);
+
+        if (spawn) {
+            hologram.spawn(SpawnType.ALL);
+        }
+    }
+
+    public void appendTextPacket(String name, boolean spawn) {
+        appendTextPacket(name, 0.3, spawn);
+    }
+
+    public void insertTextPacket(String name, int index) {
+        Hologram hologram = getHologram(index);
+        if (!hologram.isPacket()) return;
+
+        if (hologram.isPacket()) {
+            hologram.setLine(ChatColor.translateAlternateColorCodes('&', name));
+            hologram.update(UpdateType.NAME);
+        }
+    }
+
+    public void removeTextPacket(int index) {
+        Hologram hologram = getHologram(index);
+
+        if (hologram == null) return;
+
+        if (hologram.isPacket()) {
+            hologram.remove(RemoveType.ALL);
+            holograms.remove(hologram.getId());
+            calculatePosition(index);
         }
     }
 
@@ -108,7 +166,12 @@ public class HologramBox {
     }
 
     public Location getNewLoc(double quirky) {
-        return location.clone().add(0, (holograms.size() == 0 ? 0 : -quirky * holograms.size()), 0);
+        int size = holograms.size() - 1;
+        double space = getAllSpace(size);
+        double positionMultiply = quirky * holograms.size();
+        double itemSpace = getAllItems(size);
+
+        return getLocation().clone().add(0, space + positionMultiply + itemSpace, 0);
     }
 
     public String getBoxId() {
@@ -116,8 +179,8 @@ public class HologramBox {
     }
 
     public void spawnAll() {
-        for (Hologram hologram : holograms.values()) {
-            hologram.spawn(SpawnType.ALL);
+        for (int i = 0; i < holograms.size(); i++) {
+            getHologram(i).spawn(SpawnType.ALL);
         }
     }
 
@@ -153,5 +216,97 @@ public class HologramBox {
     @SuppressWarnings("unused")
     public void setHolograms(LinkedHashMap<String, Hologram> holograms) {
         this.holograms = holograms;
+    }
+
+    public void calculatePosition(int index) {
+        for (int h = index; h < holograms.size(); h++) {
+            Hologram hologram = getHologram(h);
+            double space = getAllSpace(h);
+            double positionMultiply = (hologram.isText() ? 0.3 : 0.2) * h;
+            double itemSpace = getAllItems(h);
+
+            hologram.setLocation(getLocation().clone().add(0, space + positionMultiply + itemSpace, 0));
+        }
+    }
+
+    private double getAllSpace(int index) {
+        double space = 0;
+        for (int h = index; h > 0; h--) {
+            Hologram hologram = getHologram(h);
+            if (hologram == null) continue;
+            space = space + hologram.getSpace();
+        }
+        return space;
+    }
+
+    private double getAllItems(int index) {
+        double items = 0;
+        for (int h = index; h > 0; h--) {
+            Hologram hologram = getHologram(h);
+            if (hologram == null) continue;
+            if (hologram.getArmorStand() == null) continue;
+            if (hologram.getArmorStand().getPassenger() == null) continue;
+
+            items = items + 0.2;
+        }
+        return items;
+    }
+
+
+    public void addViewer(Player player) {
+        for (Hologram hologram : holograms.values()) {
+            if (!hologram.isPacket()) continue;
+            ((HologramTextPacket) hologram).show(player);
+            System.out.println("show");
+        }
+    }
+
+    public void removeViewer(Player player) {
+        for (Hologram hologram : holograms.values()) {
+            if (hologram.isPacket()) {
+                ((HologramTextPacket) hologram).hide(player, true);
+            }
+        }
+    }
+
+    public void addViewer(Player player, int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null || !hologram.isPacket()) return;
+
+        ((HologramTextPacket) hologram).show(player);
+    }
+
+    public void removeViewer(Player player,  int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null || !hologram.isPacket()) return;
+
+        ((HologramTextPacket) hologram).hide(player, true);
+    }
+
+    public void changeLinePacket(Player player, String line, int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null) return;
+
+        if (hologram.isPacket()) {
+            ((HologramTextPacket) hologram).changeLinePlayer(player, line);
+        }
+    }
+
+    public void replaceLinePacket(String placeholder, String replace, Player player, int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null) return;
+
+        if (hologram.isPacket()) {
+            ((HologramTextPacket) hologram).changeLinePlayer(player,
+                    ((String) hologram.getLine()).replace(placeholder, replace));
+        }
+    }
+
+    public String getLines(int index) {
+        Hologram hologram = getHologram(index);
+        if (hologram == null) return "holograms is null";
+
+        if (!hologram.isItem()) return (String) hologram.getLine();
+        return "";
     }
 }

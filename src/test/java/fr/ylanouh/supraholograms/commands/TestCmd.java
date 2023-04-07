@@ -11,12 +11,13 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
+
 public class TestCmd implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Location location;
-        if(sender instanceof Player) location = ((Player) sender).getLocation();
+        if (sender instanceof Player) location = ((Player) sender).getLocation();
         else location = new Location(Bukkit.getWorld("world"), 0, 150, 0);
 
         try {
@@ -32,7 +33,7 @@ public class TestCmd implements CommandExecutor {
             sender.sendMessage(Arrays.toString(e.getStackTrace()));
             System.out.println("Tests failed with errors");
         }
-
         return false;
     }
+
 }

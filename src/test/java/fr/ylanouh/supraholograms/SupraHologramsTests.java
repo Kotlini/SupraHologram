@@ -91,7 +91,7 @@ public class SupraHologramsTests extends TestCase {
         assertEquals(0, armorStands.size());
 
         runTask(()-> {
-            box.get().appendText("value");
+            box.get().appendText("value", false);
             box.get().getHologram(0).spawn(SpawnType.ALL);
         });
         assertEquals(1, box.get().getHolograms().size());
@@ -126,7 +126,7 @@ public class SupraHologramsTests extends TestCase {
         assertEquals(0, armorStands.size());
 
         runTask(()-> {
-            box.get().appendItem(Utils.spawnItem(new ItemStack(Material.CHEST, 3), box.get().getLocation()));
+            box.get().appendItem(Utils.spawnItem(new ItemStack(Material.CHEST, 3), box.get().getLocation()), false);
             box.get().getHologram(0).spawn(SpawnType.ARMORSTAND);
         });
         assertEquals(1, box.get().getHolograms().size());

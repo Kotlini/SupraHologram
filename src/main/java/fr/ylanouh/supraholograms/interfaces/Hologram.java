@@ -5,6 +5,9 @@ import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public interface Hologram extends Separable{
     String getId();
@@ -33,4 +36,6 @@ public interface Hologram extends Separable{
     boolean isItem();
 
     boolean isText();
+
+    boolean isPacket();
 }

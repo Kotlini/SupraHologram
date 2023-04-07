@@ -18,15 +18,12 @@ public class HologramText implements Hologram {
 
     private double space;
 
-    private HologramItem hologramItem;
-
     public HologramText(String id, String line, Location location) {
         this.id = id;
         this.line = line;
         this.location = location;
         this.armorStand = null;
         this.space = 0;
-        this.hologramItem = null;
     }
 
     @Override
@@ -47,6 +44,12 @@ public class HologramText implements Hologram {
     @Override
     public void setLocation(Location location) {
         this.location = location;
+        if (armorStand == null) {
+            spawn(SpawnType.ALL);
+            return;
+        }
+
+        this.armorStand.teleport(location);
     }
 
     @Override
@@ -128,6 +131,11 @@ public class HologramText implements Hologram {
     }
 
     @Override
+    public boolean isPacket() {
+        return false;
+    }
+
+    @Override
     public void setLine(Object line) {
         this.line = (String) line;
 
@@ -148,20 +156,5 @@ public class HologramText implements Hologram {
     @Override
     public double getSpace() {
         return space;
-    }
-
-    @SuppressWarnings("unused")
-    public HologramItem getHologramItem() {
-        return hologramItem;
-    }
-
-    @SuppressWarnings("unused")
-    public void setHologramItem(HologramItem hologramItem) {
-        this.hologramItem = hologramItem;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean asHologramItem() {
-        return this.hologramItem != null;
     }
 }

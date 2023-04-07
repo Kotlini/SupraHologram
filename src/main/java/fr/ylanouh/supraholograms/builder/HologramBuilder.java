@@ -4,6 +4,7 @@ import fr.ylanouh.supraholograms.SupraHolograms;
 import fr.ylanouh.supraholograms.Utils;
 import fr.ylanouh.supraholograms.hologram.HologramBox;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class HologramBuilder {
@@ -14,12 +15,32 @@ public final class HologramBuilder {
 
     public HologramBuilder(String boxId, Location location) {
         this.hologramBox = new HologramBox(boxId, location);
-        this.quirky = 0;
+        this.quirky = 0.3;
     }
 
-    @SuppressWarnings("unused")
     public HologramBuilder setQuirky(double d) {
         this.quirky = d;
+        return this;
+    }
+
+    public HologramBuilder addViewer(Player player) {
+        hologramBox.addViewer(player);
+        return this;
+    }
+
+    public HologramBuilder addViewer(Player player, int index) {
+        hologramBox.addViewer(player, index);
+        return this;
+    }
+
+    public HologramBuilder appendLinePacket(String line) {
+        double q = quirky != 0 ? quirky : 0.3;
+        hologramBox.appendTextPacket(line, q, false);
+        return this;
+    }
+
+    public HologramBuilder appendLinesPacket(String... lines) {
+        for (String line : lines) appendLinePacket(line);
         return this;
     }
 
@@ -35,13 +56,13 @@ public final class HologramBuilder {
 
     public HologramBuilder appendLine(ItemStack item) {
         double q = quirky != 0 ? quirky : 0.3;
-        hologramBox.appendItem(Utils.spawnItem(item, hologramBox.getLocation()), q);
+        hologramBox.appendItem(Utils.spawnItem(item, hologramBox.getLocation()), q, false);
         return this;
     }
 
     public HologramBuilder appendLine(String line) {
         double q = quirky != 0 ? quirky : 0.3;
-        hologramBox.appendText(line, q);
+        hologramBox.appendText(line, q, false);
         return this;
     }
 
