@@ -10,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 public class Main extends JavaPlugin {
 
     private static Main instance;
@@ -49,7 +51,7 @@ public class Main extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new JoinPlayer(), this);
 
-        /*System.out.println("SupraHolograms was enabled");
+        System.out.println("SupraHolograms was enabled");
         System.out.println("Unit test starting...");
 
         try {
@@ -62,7 +64,7 @@ public class Main extends JavaPlugin {
         } catch (Exception e) {
             System.out.println("Tests failed with errors");
             System.out.println(Arrays.toString(e.getStackTrace()));
-        }*/
+        }
     }
 
     @Override

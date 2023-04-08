@@ -66,13 +66,11 @@ public final class HologramBuilder {
         return this;
     }
 
-    @SuppressWarnings("unused")
     public HologramBuilder addSpace(int index, double quirky) {
         this.hologramBox.getHologram(index).addSpace(quirky);
         return this;
     }
 
-    @SuppressWarnings("unused")
     public HologramBuilder insertItem(ItemStack item, int index) {
         hologramBox.insertItem(index, Utils.spawnItem(item, hologramBox.getLocation()));
         return this;

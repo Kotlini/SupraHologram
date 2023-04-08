@@ -39,10 +39,4 @@ public class Utils {
         Object nmsWorld = getHandleMethod.invoke(craftWorld);
         return (WorldServer) nmsWorld;
     }
-
-    public static World toBukkitWorld(WorldServer nmsWorld) throws Exception {
-        Field worldField = nmsWorld.getClass().getField("world");
-        Object craftWorld = worldField.get(nmsWorld);
-        return ((CraftWorld) craftWorld);
-    }
 }
