@@ -25,30 +25,6 @@ public class Main extends JavaPlugin {
 
         SupraHolograms.getInstance().setPlugin(this);
 
-        Location location = new Location(Bukkit.getWorld("world"), 47.5, 64, 151.5);
-
-        // Create simple holograms
-        new HologramBuilder("test-1", location).appendLines("&eWorld", "&6Hello").build();
-
-        // Create holograms line and item, add space 0.6 for "&6Hello"
-        new HologramBuilder("test-2", location.add(-3, 0, 0))
-                .appendLine("&eWorld").appendLine(new ItemStack(Material.EMERALD_BLOCK))
-                .appendLine("&6Hello")
-                .addSpace(2, 0.6).build();
-
-        // Create holograms line and item
-        new HologramBuilder("test-3", location.add(-3, 0, 0))
-                .appendLines("&eWorld", "&6Hello").appendLine(new ItemStack(Material.EMERALD_BLOCK)).build();
-
-        // Create holograms client
-        new HologramBuilder("test-4", location.add(-6, 0, 0))
-                .appendLinesPacket("&bUUID:&c %uuid%", "&bIP:&c %ip%", "&9&lInfo player&b %player%")
-                .appendLine(new ItemStack(Material.PAPER)).build();
-
-        // Create holograms client
-        new HologramBuilder("test-5", location.add(-6, 0, 0))
-                .appendLinesPacket("&a&lonly one to see me", "&2&lYou are the").build();
-
         getServer().getPluginManager().registerEvents(new JoinPlayer(), this);
 
         System.out.println("SupraHolograms was enabled");
