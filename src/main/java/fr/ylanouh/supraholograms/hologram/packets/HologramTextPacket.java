@@ -248,4 +248,9 @@ public class HologramTextPacket implements Hologram {
         Bukkit.getScheduler().runTask(SupraHolograms.getInstance().getPlugin(), () ->
                 entityArmorStand.setPosition(posX, posY, posZ));
     }
+
+    @Override
+    public String getType() {
+        return "packet";
+    }
 }

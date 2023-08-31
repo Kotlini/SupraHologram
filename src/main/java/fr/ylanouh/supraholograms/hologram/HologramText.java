@@ -157,4 +157,9 @@ public class HologramText implements Hologram {
     public double getSpace() {
         return space;
     }
+
+    @Override
+    public String getType() {
+        return "text";
+    }
 }

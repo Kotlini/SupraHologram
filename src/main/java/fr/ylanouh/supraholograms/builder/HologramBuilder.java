@@ -3,6 +3,7 @@ package fr.ylanouh.supraholograms.builder;
 import fr.ylanouh.supraholograms.SupraHolograms;
 import fr.ylanouh.supraholograms.Utils;
 import fr.ylanouh.supraholograms.hologram.HologramBox;
+import fr.ylanouh.supraholograms.interfaces.Hologram;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -68,6 +69,10 @@ public final class HologramBuilder {
 
     public HologramBuilder addSpace(int index, double quirky) {
         this.hologramBox.getHologram(index).addSpace(quirky);
+        return this;
+    }
+
+    public HologramBuilder addHologram(Hologram hologram) {
         return this;
     }
 

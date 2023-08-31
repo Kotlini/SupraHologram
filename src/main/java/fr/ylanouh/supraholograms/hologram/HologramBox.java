@@ -1,5 +1,7 @@
 package fr.ylanouh.supraholograms.hologram;
 
+import fr.ylanouh.supraholograms.config.CHologramBox;
+import fr.ylanouh.supraholograms.config.CLocation;
 import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class HologramBox {
     private String boxId;
@@ -66,8 +69,8 @@ public class HologramBox {
     }
 
     public void appendItem(Item item, double quirky, boolean spawn) {
-        String id = generateID();
-        HologramItem hologramItem = new HologramItem(generateID(), item, getNewLoc(quirky), null);
+        final String id = generateID();
+        final HologramItem hologramItem = new HologramItem(id, item, getNewLoc(quirky), null);
         holograms.put(id, hologramItem);
 
         if (spawn) {
@@ -114,9 +117,17 @@ public class HologramBox {
         }
     }
 
+    public void appendHologram(Hologram hologram, boolean spawn) {
+        holograms.put(hologram.getId(), hologram);
+
+        if (spawn) {
+            hologram.spawn(SpawnType.ALL);
+        }
+    }
+
     public void appendTextPacket(String name, double quirky, boolean spawn) {
-        String id = generateID();
-        Hologram hologram = new HologramTextPacket(generateID(), ChatColor.translateAlternateColorCodes('&', name),
+        final String id = generateID();
+        final Hologram hologram = new HologramTextPacket(id, ChatColor.translateAlternateColorCodes('&', name),
                 getNewLoc(quirky));
         holograms.put(id, hologram);
 
@@ -257,7 +268,6 @@ public class HologramBox {
         for (Hologram hologram : holograms.values()) {
             if (!hologram.isPacket()) continue;
             ((HologramTextPacket) hologram).show(player);
-            System.out.println("show");
         }
     }
 
@@ -308,5 +318,20 @@ public class HologramBox {
 
         if (!hologram.isItem()) return (String) hologram.getLine();
         return "";
+    }
+
+    @SuppressWarnings("WriteOnlyObject")
+    public CHologramBox toConfig() {
+        final CHologramBox cHologramBox = new CHologramBox();
+        cHologramBox.setId(getBoxId());
+        cHologramBox.setLocation(CLocation.of(getLocation()));
+        cHologramBox.setHologramMap(getHolograms().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().toConfig(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                )));
+        return cHologramBox;
     }
 }

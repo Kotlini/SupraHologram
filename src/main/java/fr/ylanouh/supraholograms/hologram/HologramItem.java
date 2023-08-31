@@ -174,4 +174,9 @@ public class HologramItem implements Hologram {
 
         getArmorStand().setPassenger(line);
     }
+
+    @Override
+    public String getType() {
+        return "item";
+    }
 }

@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 public class Utils {
 
     public static Item spawnItem(ItemStack itemStack, Location location) {
-        Item item = location.getWorld().dropItem(location, itemStack);
+        final Item item = location.getWorld().dropItem(location, itemStack);
         item.setPickupDelay(Integer.MAX_VALUE);
         item.setCustomName(" ");
         item.setVelocity(new Vector(0, 0, 0));
