@@ -8,6 +8,7 @@ import fr.ylanouh.supraholograms.enums.UpdateType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,7 +51,8 @@ public interface Hologram extends Separable{
         cHologram.setId(getId());
         cHologram.setLocation(CLocation.of(getLocation()));
         cHologram.setType(getType());
-        cHologram.setLine(getType().equalsIgnoreCase("item") ? ((ItemStack) getLine()).getType().name()  : (String) getLine());
+        cHologram.setLine(getType().equalsIgnoreCase("item") ? ((Item) getLine()).getItemStack().getType().name()
+                : (String) getLine());
         return cHologram;
     }
 }
