@@ -5,15 +5,12 @@ import fr.ylanouh.supraholograms.hologram.HologramBox;
 import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.BaseConstructor;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SupraHolograms {
 
@@ -69,12 +66,7 @@ public class SupraHolograms {
     public void save(File file, BaseConstructor baseConstructor) {
         final Yaml yaml = new Yaml(baseConstructor);
         try (PrintWriter writerProfile = new PrintWriter(file)) {
-            yaml.dumpAll(hologramsBoxes.entrySet().stream().collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> entry.getValue().toConfig(),
-                    (e1, e2) -> e1,
-                    HashMap::new
-            )).entrySet().iterator(), writerProfile);
+            yaml.dumpAll(hologramsBoxes.values().stream().map(HologramBox::toConfig).iterator(), writerProfile);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
