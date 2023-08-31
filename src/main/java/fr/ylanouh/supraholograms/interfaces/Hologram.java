@@ -6,13 +6,8 @@ import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public interface Hologram extends Separable{
     String getId();

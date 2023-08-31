@@ -4,6 +4,7 @@ import fr.ylanouh.supraholograms.config.CHologramBox;
 import fr.ylanouh.supraholograms.hologram.HologramBox;
 import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.BaseConstructor;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -65,8 +66,8 @@ public class SupraHolograms {
         return instance;
     }
 
-    public void save(File file, ClassLoader classLoader) {
-        final Yaml yaml = new Yaml(new Constructor(CHologramBox.class));
+    public void save(File file, BaseConstructor baseConstructor) {
+        final Yaml yaml = new Yaml(baseConstructor);
         try (PrintWriter writerProfile = new PrintWriter(file)) {
             yaml.dumpAll(hologramsBoxes.entrySet().stream().collect(Collectors.toMap(
                     Map.Entry::getKey,
@@ -79,8 +80,8 @@ public class SupraHolograms {
         }
     }
 
-    public void load(File file, ClassLoader classLoader) {
-        final Yaml yaml = new Yaml(new Constructor(CHologramBox.class));
+    public void load(File file, BaseConstructor baseConstructor) {
+        final Yaml yaml = new Yaml(baseConstructor);
         yaml.setBeanAccess(BeanAccess.FIELD);
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
             final Iterable<Object> arenas = yaml.loadAll(inputStream);
