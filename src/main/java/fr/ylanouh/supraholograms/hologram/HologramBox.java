@@ -15,7 +15,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class HologramBox {
     private String boxId;
@@ -320,18 +319,11 @@ public class HologramBox {
         return "";
     }
 
-    @SuppressWarnings("WriteOnlyObject")
     public CHologramBox toConfig() {
         final CHologramBox cHologramBox = new CHologramBox();
         cHologramBox.setId(getBoxId());
         cHologramBox.setLocation(CLocation.of(getLocation()));
-        cHologramBox.setHologramMap(getHolograms().entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().toConfig(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                )));
+        holograms.values().forEach(hologram -> cHologramBox.addHologram(hologram.toConfig()));
         return cHologramBox;
     }
 }

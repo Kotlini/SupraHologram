@@ -14,13 +14,12 @@ public class CHologramBox {
 
     private LinkedHashMap<String, CHologram> hologramMap;
 
-
     public LinkedHashMap<String, CHologram> getHologramMap() {
         return hologramMap;
     }
 
-    public void setHologramMap(LinkedHashMap<String, CHologram> hologramMap) {
-        this.hologramMap = hologramMap;
+    public void addHologram(CHologram hologram) {
+        this.hologramMap.put(hologram.getId(), hologram);
     }
 
     public CLocation getLocation() {
@@ -41,13 +40,8 @@ public class CHologramBox {
 
     public HologramBox toBox() {
         final HologramBox hologramBox = new HologramBox(getId(), getLocation().toLocation());
-        hologramBox.setHolograms(getHologramMap().entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().toHologram(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                )));
+        hologramBox.setHolograms(hologramMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                entry -> entry.getValue().toHologram(), (existing, replacement) -> existing, LinkedHashMap::new)));
         return hologramBox;
     }
 }
