@@ -1,14 +1,21 @@
 package fr.ylanouh.supraholograms;
 
-import fr.ylanouh.supraholograms.config.CHologramBox;
 import fr.ylanouh.supraholograms.hologram.HologramBox;
+import fr.ylanouh.supraholograms.hologram.HologramItem;
+import fr.ylanouh.supraholograms.hologram.HologramText;
+import fr.ylanouh.supraholograms.hologram.packets.HologramTextPacket;
+import fr.ylanouh.supraholograms.interfaces.Hologram;
+import fr.ylanouh.supraholograms.listener.HologramListener;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.BaseConstructor;
-import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.bukkit.plugin.PluginManager;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,28 +70,46 @@ public class SupraHolograms {
         return instance;
     }
 
-    public void save(File file, BaseConstructor baseConstructor) {
-        final Yaml yaml = new Yaml(baseConstructor);
-        try (PrintWriter writerProfile = new PrintWriter(file)) {
-            yaml.dumpAll(hologramsBoxes.values().stream().map(HologramBox::toConfig).iterator(), writerProfile);
-        } catch (FileNotFoundException e) {
+    public void save(File file, YamlConfiguration config) {
+        for (HologramBox hologramBox : getHologramsBoxes().values()) {
+            final String key = "hologramsBox." + hologramBox.getBoxId() + ".";
+            config.set(key + "location", parseLocToString(hologramBox.getLocation()));
+            for (Hologram hologram : hologramBox.getHolograms().values()) {
+                final String keyHolo = key + "holograms." + hologram.getId() + ".";
+                config.set(keyHolo + "location", parseLocToString(hologram.getLocation()));
+                config.set(keyHolo + "type", hologram.getType());
+                config.set(keyHolo + "line", (hologram.getType().equalsIgnoreCase("item") ? ((Item) hologram.getLine()).getItemStack().getType().name()
+                        : (String) hologram.getLine()));
+            }
+        }
+
+        try {
+            config.save(file);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void load(File file, BaseConstructor baseConstructor) {
-        final Yaml yaml = new Yaml(baseConstructor);
-        yaml.setBeanAccess(BeanAccess.FIELD);
-        try (InputStream inputStream = Files.newInputStream(file.toPath())) {
-            final Iterable<Object> arenas = yaml.loadAll(inputStream);
-            while (arenas.iterator().hasNext()) {
-                final Object o = arenas.iterator().next();
-                if (o instanceof CHologramBox) {
-                    add(((CHologramBox) o).toBox());
+    public static void register(Plugin plugin, PluginManager pm) {
+        pm.registerEvents(new HologramListener(), plugin);
+    }
+
+    public void load(YamlConfiguration config) {
+        for (String id : config.getConfigurationSection("hologramsBox").getKeys(false)) {
+            final String key = "hologramsBox." + id + ".";
+            final HologramBox hologramBox = new HologramBox(id, parseStringToLoc(config.getString(key + "location")));
+            for (String holoId : config.getConfigurationSection(key + "holograms").getKeys(false)) {
+                final String keyHolo = key + "holograms." + holoId + ".";
+                switch (config.getString(keyHolo + "type")) {
+                    case "packet":
+                        hologramBox.add(new HologramTextPacket(holoId, config.getString(keyHolo + "line"), parseStringToLoc(keyHolo + "location")));
+                    case "item":
+                        hologramBox.add(new HologramItem(holoId,  Utils.spawnItem(new ItemStack(Material.
+                                valueOf(config.getString(keyHolo + "line"))), parseStringToLoc(keyHolo + "location")), parseStringToLoc(keyHolo + "location"), null));
+                    default:
+                        new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(keyHolo + "location"));
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -95,4 +120,14 @@ public class SupraHolograms {
     public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
     }
-}
+
+    private String parseLocToString(Location location) {
+        return location.getX() + "," + location.getY() + "," + location.getZ() + "," + location.getWorld().getName();
+    }
+
+    private Location parseStringToLoc(String loc) {
+        final String[] parser = loc.split(",");
+        return new Location(Bukkit.getWorld(parser[3]), Double.parseDouble(parser[0]), Double.parseDouble(parser[0]),
+                Double.parseDouble(parser[0]));
+    }
+ }

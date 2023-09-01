@@ -1,7 +1,5 @@
 package fr.ylanouh.supraholograms.hologram;
 
-import fr.ylanouh.supraholograms.config.CHologramBox;
-import fr.ylanouh.supraholograms.config.CLocation;
 import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
@@ -27,6 +25,10 @@ public class HologramBox {
         this.boxId = boxId;
         this.location = location;
         this.holograms = new LinkedHashMap<>();
+    }
+
+    public void add(Hologram hologram) {
+        this.holograms.put(hologram.getId(), hologram);
     }
 
     public void appendText(String name, boolean spawn) {
@@ -317,13 +319,5 @@ public class HologramBox {
 
         if (!hologram.isItem()) return (String) hologram.getLine();
         return "";
-    }
-
-    public CHologramBox toConfig() {
-        final CHologramBox cHologramBox = new CHologramBox();
-        cHologramBox.setId(getBoxId());
-        cHologramBox.setLocation(CLocation.of(getLocation()));
-        holograms.values().forEach(hologram -> cHologramBox.addHologram(hologram.toConfig()));
-        return cHologramBox;
     }
 }

@@ -8,6 +8,8 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
@@ -17,8 +19,7 @@ public class Utils {
 
     public static Item spawnItem(ItemStack itemStack, Location location) {
         final Item item = location.getWorld().dropItem(location, itemStack);
-        item.setPickupDelay(Integer.MAX_VALUE);
-        item.setCustomName(" ");
+        item.setCustomName("SUPRAHOLOGRAMS");
         item.setVelocity(new Vector(0, 0, 0));
         item.setCustomNameVisible(false);
         return item;

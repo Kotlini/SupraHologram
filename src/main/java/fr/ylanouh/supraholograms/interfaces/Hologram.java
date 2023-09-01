@@ -1,13 +1,10 @@
 package fr.ylanouh.supraholograms.interfaces;
 
-import fr.ylanouh.supraholograms.config.CHologram;
-import fr.ylanouh.supraholograms.config.CLocation;
 import fr.ylanouh.supraholograms.enums.RemoveType;
 import fr.ylanouh.supraholograms.enums.SpawnType;
 import fr.ylanouh.supraholograms.enums.UpdateType;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Item;
 
 public interface Hologram extends Separable{
     String getId();
@@ -40,14 +37,4 @@ public interface Hologram extends Separable{
     boolean isPacket();
 
     String getType();
-
-    default CHologram toConfig() {
-        final CHologram cHologram = new CHologram();
-        cHologram.setId(getId());
-        cHologram.setLocation(CLocation.of(getLocation()));
-        cHologram.setType(getType());
-        cHologram.setLine(getType().equalsIgnoreCase("item") ? ((Item) getLine()).getItemStack().getType().name()
-                : (String) getLine());
-        return cHologram;
-    }
 }
