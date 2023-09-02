@@ -191,9 +191,7 @@ public class HologramBox {
     }
 
     public void spawnAll() {
-        System.out.println("holograms count in " + getBoxId() + " " + holograms.size());
         for (int i = 0; i < holograms.size(); i++) {
-            System.out.println("Spawn holo n°" + i + " is null:" + getHologram(i));
             getHologram(i).spawn(SpawnType.ALL);
         }
     }

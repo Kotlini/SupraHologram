@@ -56,8 +56,6 @@ public class SupraHolograms {
 
     public void spawnAll() {
         for (HologramBox hologramBox : hologramsBoxes.values()) {
-            System.out.println("Spawn holo: " + hologramBox.getBoxId());
-
             hologramBox.spawnAll();
         }
     }
