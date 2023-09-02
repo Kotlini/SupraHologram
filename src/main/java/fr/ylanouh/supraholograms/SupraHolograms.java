@@ -121,6 +121,7 @@ public class SupraHolograms {
                         new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location")));
                 }
             }
+            add(hologramBox);
         }
     }
 
