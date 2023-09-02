@@ -110,15 +110,20 @@ public class SupraHolograms {
             final HologramBox hologramBox = new HologramBox(id, parseStringToLoc(config.getString(key + "location")));
             for (String holoId : config.getConfigurationSection(key + "holograms").getKeys(false)) {
                 final String keyHolo = key + "holograms." + holoId + ".";
+                System.out.println("Type: " + config.getString(keyHolo + "type"));
+
                 switch (config.getString(keyHolo + "type")) {
                     case "packet":
                         hologramBox.add(new HologramTextPacket(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location"))));
+                        break;
                     case "item":
                         hologramBox.add(new HologramItem(holoId,  Utils.spawnItem(new ItemStack(Material.
                                 valueOf(config.getString(keyHolo + "line"))), parseStringToLoc(config.getString(keyHolo + "location"))),
                                 parseStringToLoc(config.getString(keyHolo + "location")), null));
+                        break;
                     default:
                         hologramBox.add(new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location"))));
+                        break;
                 }
             }
             add(hologramBox);

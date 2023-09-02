@@ -33,7 +33,6 @@ public class Main extends JavaPlugin {
         System.out.println("load config...");
         final File fileHolo = new File(getDataFolder() + File.separator + "holograms.yml");
         SupraHolograms.getInstance().load(YamlConfiguration.loadConfiguration(fileHolo));
-        System.out.println("");
         SupraHolograms.getInstance().spawnAll();
         System.out.println(SupraHolograms.getInstance().getHologramsBoxes().size() + " holograms loaded");
         /*try {
