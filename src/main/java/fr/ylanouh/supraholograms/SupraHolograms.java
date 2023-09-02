@@ -9,6 +9,7 @@ import fr.ylanouh.supraholograms.listener.HologramListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -70,7 +71,7 @@ public class SupraHolograms {
         return instance;
     }
 
-    public void save(File file, YamlConfiguration config) {
+    public void save(File file, FileConfiguration config) {
         for (HologramBox hologramBox : getHologramsBoxes().values()) {
             final String key = "hologramsBox." + hologramBox.getBoxId() + ".";
             config.set(key + "location", parseLocToString(hologramBox.getLocation()));
@@ -94,7 +95,7 @@ public class SupraHolograms {
         pm.registerEvents(new HologramListener(), plugin);
     }
 
-    public void load(YamlConfiguration config) {
+    public void load(FileConfiguration config) {
         for (String id : config.getConfigurationSection("hologramsBox").getKeys(false)) {
             final String key = "hologramsBox." + id + ".";
             final HologramBox hologramBox = new HologramBox(id, parseStringToLoc(config.getString(key + "location")));
