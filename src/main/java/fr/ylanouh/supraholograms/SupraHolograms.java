@@ -56,6 +56,8 @@ public class SupraHolograms {
 
     public void spawnAll() {
         for (HologramBox hologramBox : hologramsBoxes.values()) {
+            System.out.println("Spawn holo: " + hologramBox.getBoxId());
+
             hologramBox.spawnAll();
         }
     }
@@ -118,7 +120,7 @@ public class SupraHolograms {
                                 valueOf(config.getString(keyHolo + "line"))), parseStringToLoc(config.getString(keyHolo + "location"))),
                                 parseStringToLoc(config.getString(keyHolo + "location")), null));
                     default:
-                        new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location")));
+                        hologramBox.add(new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location"))));
                 }
             }
             add(hologramBox);
