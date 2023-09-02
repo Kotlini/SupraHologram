@@ -9,8 +9,8 @@ import fr.ylanouh.supraholograms.listener.HologramListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -72,6 +72,8 @@ public class SupraHolograms {
     }
 
     public void save(File file, FileConfiguration config) {
+        if (config == null) return;
+
         for (HologramBox hologramBox : getHologramsBoxes().values()) {
             final String key = "hologramsBox." + hologramBox.getBoxId() + ".";
             config.set(key + "location", parseLocToString(hologramBox.getLocation()));
@@ -80,7 +82,7 @@ public class SupraHolograms {
                 config.set(keyHolo + "location", parseLocToString(hologram.getLocation()));
                 config.set(keyHolo + "type", hologram.getType());
                 config.set(keyHolo + "line", (hologram.getType().equalsIgnoreCase("item") ? ((Item) hologram.getLine()).getItemStack().getType().name()
-                        : (String) hologram.getLine()));
+                        : hologram.getLine()));
             }
         }
 
@@ -96,19 +98,27 @@ public class SupraHolograms {
     }
 
     public void load(FileConfiguration config) {
-        for (String id : config.getConfigurationSection("hologramsBox").getKeys(false)) {
+        if (config == null) return;
+        final ConfigurationSection configurationSection = config.getConfigurationSection("hologramsBox");
+        if (configurationSection == null) return;
+
+        for (String id : configurationSection.getKeys(false)) {
+            if (id == null) return;
+
             final String key = "hologramsBox." + id + ".";
+
             final HologramBox hologramBox = new HologramBox(id, parseStringToLoc(config.getString(key + "location")));
             for (String holoId : config.getConfigurationSection(key + "holograms").getKeys(false)) {
                 final String keyHolo = key + "holograms." + holoId + ".";
                 switch (config.getString(keyHolo + "type")) {
                     case "packet":
-                        hologramBox.add(new HologramTextPacket(holoId, config.getString(keyHolo + "line"), parseStringToLoc(keyHolo + "location")));
+                        hologramBox.add(new HologramTextPacket(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location"))));
                     case "item":
                         hologramBox.add(new HologramItem(holoId,  Utils.spawnItem(new ItemStack(Material.
-                                valueOf(config.getString(keyHolo + "line"))), parseStringToLoc(keyHolo + "location")), parseStringToLoc(keyHolo + "location"), null));
+                                valueOf(config.getString(keyHolo + "line"))), parseStringToLoc(config.getString(keyHolo + "location"))),
+                                parseStringToLoc(config.getString(keyHolo + "location")), null));
                     default:
-                        new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(keyHolo + "location"));
+                        new HologramText(holoId, config.getString(keyHolo + "line"), parseStringToLoc(config.getString(keyHolo + "location")));
                 }
             }
         }
@@ -128,7 +138,7 @@ public class SupraHolograms {
 
     private Location parseStringToLoc(String loc) {
         final String[] parser = loc.split(",");
-        return new Location(Bukkit.getWorld(parser[3]), Double.parseDouble(parser[0]), Double.parseDouble(parser[0]),
-                Double.parseDouble(parser[0]));
+        return new Location(Bukkit.getWorld(parser[3]), Double.parseDouble(parser[0]), Double.parseDouble(parser[1]),
+                Double.parseDouble(parser[2]));
     }
  }

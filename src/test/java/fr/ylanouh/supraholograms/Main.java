@@ -1,16 +1,12 @@
 package fr.ylanouh.supraholograms;
 
-import fr.ylanouh.supraholograms.builder.HologramBuilder;
 import fr.ylanouh.supraholograms.commands.SHCmd;
 import fr.ylanouh.supraholograms.commands.TestCmd;
 import fr.ylanouh.supraholograms.listeners.JoinPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
+import java.io.File;
 
 public class Main extends JavaPlugin {
 
@@ -23,6 +19,7 @@ public class Main extends JavaPlugin {
         getCommand("test").setExecutor(new TestCmd());
         getCommand("sh").setExecutor(new SHCmd());
 
+        SupraHolograms.register(this, getServer().getPluginManager());
         SupraHolograms.getInstance().setPlugin(this);
 
         getServer().getPluginManager().registerEvents(new JoinPlayer(), this);
@@ -32,6 +29,12 @@ public class Main extends JavaPlugin {
 
         System.out.println("Tests success");
 
+
+        System.out.println("load config...");
+        final File fileHolo = new File(getDataFolder() + File.separator + "holograms.yml");
+        SupraHolograms.getInstance().load(YamlConfiguration.loadConfiguration(fileHolo));
+        SupraHolograms.getInstance().spawnAll();
+        System.out.println(SupraHolograms.getInstance().getHologramsBoxes().size() + " holograms loaded");
         /*try {
             System.out.println("Starting test at 0, 150, 0");
             SupraHologramsTests.prepare(new Location(Bukkit.getWorld("world"), 0, 150, 0));
@@ -45,6 +48,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        final File fileHolo = new File(getDataFolder() + File.separator + "holograms.yml");
+        SupraHolograms.getInstance().save(fileHolo, YamlConfiguration.loadConfiguration(fileHolo));
         SupraHolograms.getInstance().removeAll();
     }
 
